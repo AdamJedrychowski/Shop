@@ -1,0 +1,61 @@
+{% extends "template.html" %}
+
+
+{% block menu_bottom %}
+<div class="dropdown pb-4">
+    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu-bottom">
+        <li>
+            <a href="/login" class="nav-link px-0 align-middle">
+                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Zaloguj się</span></a>
+        </li>
+        <li>
+            <a href="/register" class="nav-link px-0 align-middle">
+                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Zarejestruj się</span></a>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="container" class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-header text-center h5">Logowanie</div>
+                <div class="card-body">
+                    <form name="my-form" action="/login" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <div>
+                                <input type="text" id="email" class="form-control" name="email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group pt-3">
+                            <label for="password">Hasło</label>
+                            <div>
+                                <input type="password" id="password" class="form-control" name="password" required>
+                            </div>
+                        </div>
+
+                        <div class="text-center pt-3">
+                            <button type="submit" class="btn btn-primary">Zaloguj</button>
+                        </div>
+
+                    </form>
+                    {% if error %}
+                    <div class="text-center">
+                        <div class="alert alert-danger alert-dismissible in mt-2 mb-0 d-inline-block text-center">
+                            <div class="small">{{ error }}</div>
+                            <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        </div>                    
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

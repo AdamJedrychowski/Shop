@@ -1,0 +1,80 @@
+{% extends "template.html" %}
+
+
+{% block menu %}
+<li class="nav-item">
+        <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Magazynier</span>
+</li>
+<li class="nav-item">
+    <a href="/warehouseman" class="nav-link align-middle px-0">
+        <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Zamówienia</span>
+    </a>
+</li>
+{% endblock %}
+
+
+{% block menu_bottom %}
+<div class="dropdown pb-4">
+    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu-bottom">
+        <li>
+            <a href="/logout" class="nav-link px-0 align-middle">
+                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Wyloguj</span></a>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+
+{% block content %}
+<main class="container table-responsive">
+    <header>
+        <h2>Orders</h2>
+    </header>
+    <table class="table table-striped table-fixed">
+        <thead>
+            <tr>
+                <th scope="col">Itemy</th>
+                <th scope="col">Id</th>
+                <th scope="col">Data</th>
+                <th scope="col">Zamówienie</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for id, date in orders %}
+            <tr>
+                <td><button class="btn btn-default" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample-{{ id }}" aria-expanded="false" aria-controls="collapseExample" style="color:blue">+</button></td>
+                <td>{{ id }}</td>
+                <td>{{ date }}</td>
+                <td><button class="btn btn-default" onclick="ready({{ id }})" type="button" style="color:#08d120">Gotowe</button></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="collapse" id="collapseExample-{{ id }}">
+                        <table class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Nazwa</th>
+                                    <th>Ilość</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for name, count in items|get_item:id %}
+                                <tr>
+                                    <td scope="row">{{ name }}</td>
+                                    <td>{{ count }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</main>
+{% endblock %}
+
+
+</p>

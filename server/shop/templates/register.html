@@ -1,0 +1,110 @@
+{% extends "template.html" %}
+
+
+{% block menu_bottom %}
+<div class="dropdown pb-4">
+    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu-bottom">
+        <li>
+            <a href="/login" class="nav-link px-0 align-middle">
+                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Zaloguj się</span></a>
+        </li>
+        <li>
+            <a href="/register" class="nav-link px-0 align-middle">
+                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Zarejestruj się</span></a>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="container" class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-header text-center h5">Rejestracja</div>
+                <div class="card-body">
+                    <form class="row g-3" action="/register" method="POST">
+                        {% csrf_token %}
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Imie</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="surname" class="form-label">Nazwisko</label>
+                            <input type="text" class="form-control" id="surname" name="surname" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="email" class="form-label">E-mail</label>
+                            <input type="text" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="pass" class="form-label">Hasło</label>
+                            <input type="password" class="form-control" id="pass" name="pass" required>
+                        </div>
+                        <div class="row pt-3">
+                            <div class="col-6">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label for="country" class="form-label">Kraj</label>
+                                        <select id="country" class="form-select" name="country" required>
+                                            <option>Polska</option>
+                                            <option>Niemcy</option>
+                                            <option>Włochy</option>
+                                            <option>Ukraina</option>
+                                            <option>Francja</option>
+                                            <option>Grecja</option>
+                                            <option>Szwecja</option>
+                                            <option>Finlandia</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group row">
+                                            <label for="age" class="col-md-4 col-form-label">Wiek</label>
+                                            <div class="col-md-7">
+                                                <input type="number" id="age" class="form-control" name="age" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                            
+                            </div>
+                            <div class="col-6  d-flex align-items-center">
+                                <div class="text-center">
+                                    <div>Płeć</div>
+                                    <div class="form-check-inline">
+                                        <input class="form-check-input" type="radio" name="gender" value="Brak" id="none" checked>
+                                        <label class="form-check-label" for="none">Brak</label>
+                                    </div><br>
+                                    <div class="form-check-inline">
+                                        <input class="form-check-input" type="radio" name="gender" value="Mężczyzna" id="man">
+                                        <label class="form-check-label" for="man">Mężczyzna</label>
+                                    </div><br>
+                                    <div class="form-check-inline">
+                                        <input class="form-check-input" type="radio" name="gender" value="Kobieta" id="woman">
+                                        <label class="form-check-label" for="woman">Kobieta</label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <input class="form-check-input" type="radio" name="gender" value="Inny" id="other">
+                                        <label class="form-check-label" for="other">Inny</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Stwórz konto</button>
+                        </div>
+                    </form>
+                    {% if error %}
+                    <div class="text-center">
+                        <div class="alert alert-danger alert-dismissible in mt-2 mb-0 d-inline-block text-center">
+                            <div class="small">{{ error }}</div>
+                            <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        </div>                    
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "template.html" %}
+
+
+{% block menu_bottom %}
+<div class="dropdown pb-4">
+    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu-bottom">
+        <li>
+            <a href="/login" class="nav-link px-0 align-middle">
+                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Zaloguj się</span></a>
+        </li>
+        <li>
+            <a href="/register" class="nav-link px-0 align-middle">
+                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Zarejestruj się</span></a>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <div class="text-center">
+        <h1>Sklep komputerowy</h1>
+    </div>
+</div>
+{% endblock %}

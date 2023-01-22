@@ -1,0 +1,75 @@
+{% extends "template.html" %}
+
+
+{% block menu %}
+<li class="nav-item">
+    <a href="/products" class="nav-link align-middle px-0">
+        <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Produkty</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="/pay" class="nav-link align-middle px-0">
+        <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Do opłacenia</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="/order" class="nav-link align-middle px-0">
+        <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Zamówienia</span>
+    </a>
+</li>
+{% endblock %}
+
+
+{% block menu_bottom %}
+<div class="dropdown pb-4">
+    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu-bottom">
+        <li>
+            <a href="/logout" class="nav-link px-0 align-middle">
+                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Wyloguj</span></a>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    
+    <div class="dropdown pb-3">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            Wyświetl zamówienia:
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li><a class="dropdown-item" href="/order">Wszystkie</a></li>
+            <li><a class="dropdown-item" href="/order/1">Nie opłacone</a></li>
+            <li><a class="dropdown-item" href="/order/2">W trakcie przygotowania</a></li>
+            <li><a class="dropdown-item" href="/order/3">Oczekuje na kuriera</a></li>
+            <li><a class="dropdown-item" href="/order/4">U dostawcy</a></li>
+            <li><a class="dropdown-item" href="/order/5">Doręczone</a></li>
+        </ul>
+    </div>
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Nr zamówienia</th>
+                <th>Status</th>
+                <th>Dostawa do</th>
+                <th>Cena</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table %}
+            <tr>
+                <td>{{ row.0 }}</td>
+                <td>{{ row.1 }}</td>
+                <td>{{ row.2 }}</td>
+                <td>{{ row.3 }}</td>
+                <td>{{ row.4 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
