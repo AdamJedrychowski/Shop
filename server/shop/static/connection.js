@@ -99,3 +99,15 @@ function deliver(id) {
     })
     .catch(error => console.error('Error:', error));
 }
+
+
+function fire(id) {
+    fetch('/fire', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie("csrftoken") },
+        body: JSON.stringify(id)
+    }).then(res => res.json()).then(data => {
+        alert(data.response);
+        window.location.href = '/employees';
+    }).catch(error => console.error('Error:', error));
+}

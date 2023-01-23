@@ -12,10 +12,12 @@ urlpatterns = [
     path('order', views.order, name='order'),
     path('order/<int:filter>', views.order, name='order'),
     path('pay', views.pay, name='pay'),
-    path('admin', views.admin, name='admin'),
     path('warehouseman', views.warehouseman, name='warehouseman'),
     path('ready', views.ready, name='ready'),
     path('pick_up', views.pick_up, name='pick_up'),
     path('on_the_way', views.on_the_way, name='on_the_way'),
     path('deliver', views.deliver, name='deliver'),
+    path('employees', views.employees, name='employees'),
+    path('fire', views.fire, name='fire'),
+    path('add_employee', views.add_employee, name='add_employee'),
 ]

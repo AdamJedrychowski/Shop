@@ -63,25 +63,25 @@ $$
 LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE FUNCTION register_employee(name VARCHAR(20), surname VARCHAR(30), email VARCHAR(50), pass VARCHAR(40), role VARCHAR(15))
-RETURNS VARCHAR(15) AS
+CREATE OR REPLACE FUNCTION register_employee(name VARCHAR(20), surname VARCHAR(30), in_email VARCHAR(50), pass VARCHAR(40), in_role VARCHAR(15))
+RETURNS void AS
 $$
 DECLARE
     result INTEGER;
 BEGIN
-    IF email !~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' THEN
+    IF in_email !~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' THEN
         RAISE EXCEPTION 'Niepoprawny email';
     END IF;
 
-    IF email IN (SELECT email FROM shop.Employee UNION SELECT email FROM shop.Client) THEN
+    IF in_email IN (SELECT email FROM shop.Employee UNION SELECT email FROM shop.Client) THEN
         RAISE EXCEPTION 'Konto na dany email juz istnieje';
     END IF;
 
-    SELECT id INTO result FROM shop.Job J WHERE J.role = role;
+    SELECT id INTO result FROM shop.Job J WHERE J.role = in_role;
     IF result IS NULL THEN
         RAISE EXCEPTION 'Brak danej roli';
     END IF;
-    INSERT INTO shop.Employee (name, surname, email, password, id_role) VALUES (name, surname, email, pass, result);
+    INSERT INTO shop.Employee (name, surname, email, password, id_role) VALUES (name, surname, in_email, pass, result);
 END;
 $$
 LANGUAGE plpgsql;

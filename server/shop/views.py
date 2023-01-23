@@ -32,7 +32,7 @@ def login(request):
         case 'Klient':
             page = '/products'
         case 'Admin':
-            page = '/admin'
+            page = '/employees'
         case 'Magazynier':
             page = '/warehouseman'
         case 'Dostawca':
@@ -117,25 +117,6 @@ def select_orders(filter, id):
                     GROUP BY O.id', [id])
         rows = c.fetchall()
     return rows
-
-
-def select_orders_employee_id(filter, id):
-    match filter:
-        case 0:
-            option = "AND status = 'Przygotowywane' "
-        case 1:
-            option = "AND status = 'Oczekuje na kuriera' "
-        case 2:
-            option = "AND status = 'W drodze' "
-        case 3:
-            option = "AND status = 'Dostarczone' "
-
-    with connection.cursor() as c:
-        c.execute('SELECT O.id, date FROM shop.Order O \
-                    JOIN shop.Employee E ON O.id_employee = E.id WHERE E.id = %s '+ option +'\
-                    GROUP BY O.id', [id])
-        rows = c.fetchall()
-    return rows
     
 
 def pay(request):
@@ -152,17 +133,12 @@ def pay(request):
 def order(request, filter=0):
     rows = select_orders(filter, request.session['id'])
     return render(request, 'orders.html', {'table': rows})
-
-
-def admin(request):
-    return render(request, 'admin.html')
     
 
 def warehouseman(request):
     with connection.cursor() as c:
         c.execute("SELECT O.id, date FROM shop.Order O \
-                    JOIN shop.Employee E ON O.id_employee = E.id WHERE E.id = %s AND status = 'Przygotowywane' \
-                    GROUP BY O.id", [request.session['id']])
+                    JOIN shop.Employee E ON O.id_employee = E.id WHERE E.id = %s AND status = 'Przygotowywane'", [request.session['id']])
         order = c.fetchall()
 
         c.execute("SELECT OI.id_order, name, quantity FROM shop.Order_item OI\
@@ -183,8 +159,7 @@ def pick_up(request):
 
     with connection.cursor() as c:
         c.execute("SELECT O.id, date, date + INTERVAL '5 days' FROM shop.Order O \
-                    JOIN shop.Employee E ON O.id_employee = E.id WHERE E.id = %s AND status = 'Oczekuje na kuriera' \
-                    GROUP BY O.id", [request.session['id']])
+                    JOIN shop.Employee E ON O.id_employee = E.id WHERE E.id = %s AND status = 'Oczekuje na kuriera'", [request.session['id']])
         order = c.fetchall()
 
     return render(request, 'pick_up.html', {'orders': order})
@@ -212,3 +187,32 @@ def deliver(request):
     with connection.cursor() as c:
         c.execute("UPDATE shop.Order SET status = 'Dostarczone' WHERE id = %s", [data])
     return JsonResponse({"response": "Zamówienie przekazane klientowi"})
+
+
+def employees(request):
+    with connection.cursor() as c:
+        c.execute("SELECT id, name, surname, email FROM shop.Employee WHERE id_role != 1")
+        employees = c.fetchall()
+    return render(request, 'employees.html', {'employees': employees})
+
+
+def fire(request,):
+    id = json.loads(request.body)
+    with connection.cursor() as c:
+        c.execute("DELETE FROM shop.Employee WHERE id = %s", [id])
+    return JsonResponse({"response": "Zwolniono pracownika"})
+    
+
+def add_employee(request):
+    if request.method == 'GET':
+        return render(request, 'add_employee.html')
+    
+    data = request.POST
+    with connection.cursor() as c:
+        try:
+            c.execute('SELECT register_employee(%s, %s, %s, %s, %s)', [data['name'], data['surname'], data['email'], data['pass'], data['role']])
+        except InternalError as e:
+            return render(request, 'add_employee.html', {'error': str(e)[0:str(e).find('\n')]})
+
+    return redirect('/employees')
+    

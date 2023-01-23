@@ -2,6 +2,8 @@ DROP TRIGGER status ON shop.Order;
 DROP FUNCTION order_state;
 DROP TRIGGER magazine_status ON shop.Order_item;
 DROP FUNCTION magazine;
+DROP TRIGGER fire_employee ON shop.Employee;
+DROP FUNCTION fire;
 
 
 CREATE OR REPLACE FUNCTION order_state() RETURNS TRIGGER AS $$
@@ -24,6 +26,8 @@ BEGIN
             SELECT id INTO new_id FROM deliverer;
             NEW.id_employee := new_id;
 
+        ELSIF NEW.status = 'Dostarczone' THEN
+            NEW.id_employee := NULL;
         END IF;
     END IF;
     RETURN NEW;
@@ -49,3 +53,26 @@ AFTER INSERT ON shop.Order_item
 FOR EACH ROW EXECUTE PROCEDURE magazine();
 
 
+
+CREATE OR REPLACE FUNCTION fire() RETURNS TRIGGER AS $$
+DECLARE
+    rows INTEGER;
+BEGIN
+    WHILE true
+    LOOP
+        SELECT COUNT(*) INTO rows FROM shop.Order O WHERE O.id_employee = OLD.id;
+        IF rows = 0 THEN
+            EXIT;
+        END IF;
+        WITH employee AS (SELECT E.id AS id, COUNT(O.id_employee) AS count FROM shop.Employee E LEFT JOIN shop.Order O ON O.id_employee = E.id
+                        WHERE E.id_role = OLD.id_role AND E.id != OLD.id GROUP BY E.id ORDER BY count LIMIT 1)
+        UPDATE shop.Order O SET id_employee = employee.id FROM employee WHERE O.id = (SELECT id FROM shop.Order O WHERE O.id_employee = OLD.id LIMIT 1);
+    END LOOP;
+
+    RETURN OLD;
+END;
+$$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER fire_employee
+BEFORE DELETE ON shop.Employee
+FOR EACH ROW EXECUTE PROCEDURE fire();

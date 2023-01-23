@@ -1,0 +1,54 @@
+{% extends "admin.html" %}
+
+
+{% block content %}
+<div id="container" class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-header text-center h5">Rejestracja pracownika</div>
+                <div class="card-body">
+                    <form class="row g-3" action="/add_employee" method="POST">
+                        {% csrf_token %}
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Imie</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="surname" class="form-label">Nazwisko</label>
+                            <input type="text" class="form-control" id="surname" name="surname" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="email" class="form-label">E-mail</label>
+                            <input type="text" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="pass" class="form-label">Hasło</label>
+                            <input type="password" class="form-control" id="pass" name="pass" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="role" class="form-label">Stanowisko</label>
+                            <select id="role" class="form-select" name="role" required>
+                                <option>Magazynier</option>
+                                <option>Dostawca</option>
+                                <option>Admin</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Stwórz konto</button>
+                        </div>
+                    </form>
+                    {% if error %}
+                    <div class="text-center">
+                        <div class="alert alert-danger alert-dismissible in mt-2 mb-0 d-inline-block text-center">
+                            <div class="small">{{ error }}</div>
+                            <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        </div>                    
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
