@@ -5,12 +5,13 @@ INSERT INTO shop.Job (role) VALUES
 
 
 INSERT INTO shop.Employee (name, surname, email, password, id_role) VALUES
-('Adam', 'Jakiś', 'adam@gmail.com', 'a', 1),
-('Pan', 'Ktoś', 'adam1@gmail.com', 'a', 2),
-('Klaudia', 'Beż', 'adam2@gmail.com', 'a', 2),
-('Michał', 'Też', 'adam3@gmail.com', 'a', 2),
-('Jan', 'Kowal', 'adam4@gmail.com', 'a', 3),
-('Jacek', 'Taki', 'adam5@gmail.com', 'a', 3);
+('Adam', 'Jakiś', 'admin@gmail.com', 'a', 1),
+('Pan', 'Ktoś', 'mag1@gmail.com', 'a', 2),
+('Klaudia', 'Beż', 'mag2@gmail.com', 'a', 2),
+('Michał', 'Też', 'mag3@gmail.com', 'a', 2),
+('Jan', 'Kowal', 'dostawca1@gmail.com', 'a', 3),
+('Jacek', 'Taki', 'dostawca2@gmail.com', 'a', 3),
+('Julia', 'Laka', 'dostawca3@gmail.com', 'a', 3);
 
 
 

@@ -81,6 +81,12 @@ def products(request, sort_by=0):
 def items(request):
     data = json.loads(request.body)
     with connection.cursor() as c:
+        for key, value in data['items'].items():
+            c.execute('SELECT I.number FROM shop.Item I WHERE I.id = %s', [key])
+            num = c.fetchone()[0]
+            if value > num:
+                return JsonResponse({"response": "Na magazynie nie ma wystarczająco dużej liczby produktów"})
+
         c.execute('INSERT INTO shop.Order (location, id_client) VALUES (%s, %s) RETURNING id', [data['location'], request.session['id']])
         id = c.fetchone()
         for key, value in data['items'].items():
@@ -111,7 +117,7 @@ def select_orders(filter, id):
             option = "AND status = 'Dostarczone' "
 
     with connection.cursor() as c:
-        c.execute('SELECT O.id, status, location, SUM(price), date FROM shop.Order O \
+        c.execute('SELECT O.id, status, location, SUM(price*quantity), date FROM shop.Order O \
                     JOIN shop.Order_item OI ON O.id = OI.id_order \
                     JOIN shop.Item I ON OI.id_item = I.id WHERE id_client = %s '+ option +'\
                     GROUP BY O.id', [id])
@@ -191,7 +197,8 @@ def deliver(request):
 
 def employees(request):
     with connection.cursor() as c:
-        c.execute("SELECT id, name, surname, email FROM shop.Employee WHERE id_role != 1")
+        c.execute("SELECT E.id, E.name, E.surname, E.email, COUNT(O.id) FROM shop.Employee E\
+                  LEFT JOIN shop.Order O ON E.id = O.id_employee WHERE id_role != 1 GROUP BY E.id ORDER BY E.id")
         employees = c.fetchall()
     return render(request, 'employees.html', {'employees': employees})
 
@@ -215,4 +222,78 @@ def add_employee(request):
             return render(request, 'add_employee.html', {'error': str(e)[0:str(e).find('\n')]})
 
     return redirect('/employees')
+    
+
+def list_items(request):
+    match int(request.GET.get('sort')):
+        case 0:
+            make_sort = ' ORDER BY id'
+        case 1:
+            make_sort = " ORDER BY name"
+        case 2:
+            make_sort = " ORDER BY name DESC"
+        case 3:
+            make_sort = " ORDER BY number"
+        case 4:
+            make_sort = " ORDER BY number DESC"
+        case 5:
+            make_sort = " ORDER BY sold"
+        case 6:
+            make_sort = " ORDER BY sold DESC"
+
+    limit, have = '', ''
+    match int(request.GET.get('filter')):
+        case 1:
+            limit = " LIMIT 1"
+        case 2:
+            limit = " LIMIT 3"
+        case 3:
+            have = " HAVING SUM(quantity) > (SELECT AVG(quantity) FROM shop.Order_item)"
+        case 4:
+            have = " HAVING price > (SELECT AVG(price) FROM shop.Item)"
+        case 5:
+            have = " HAVING SUM(quantity) > I.number"
+
+    with connection.cursor() as c:
+        c.execute("SELECT I.id, name, price, number, COALESCE(SUM(quantity), 0) AS sold FROM shop.Item I LEFT JOIN shop.Order_item OI ON OI.id_item = I.id GROUP BY I.id" + have + make_sort + limit)
+        items = c.fetchall()
+    return render(request, 'list_items.html', {'items': items})
+
+
+def add_item(request):  
+    if request.method == 'GET':
+        return render(request, 'add_item.html')
+
+    data = request.POST
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute("SELECT new_item(%s, %s, %s)", [data['name'], data['price'], data['number']])
+        except InternalError as e:
+            return render(request, 'add_item.html', {'error': str(e)[0:str(e).find('\n')]})
+    return redirect('/list_items?sort=0&filter=0')
+
+
+def clients(request):
+    with connection.cursor() as c:
+        c.execute("SELECT * FROM list_clients()")
+        clients = c.fetchall()
+    return render(request, 'clients.html', {'clients': clients})
+
+
+def country_item(request):
+    with connection.cursor() as c:
+        c.execute("SELECT * FROM country_buy_item()")
+        country_buy_item = c.fetchall()
+    return render(request, 'country_buy_item.html', {'country_buy_item': country_buy_item})
+
+
+def country_earn(request):
+    with connection.cursor() as c:
+        c.execute("SELECT * FROM country_stats()")
+        country_stats = c.fetchall()
+    return render(request, 'country_stats.html', {'country_stats': country_stats})
+
+
+def documentation(request):
+    return render(request, 'documentation.html')
     

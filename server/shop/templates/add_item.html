@@ -1,0 +1,42 @@
+{% extends "admin.html" %}
+
+
+{% block content %}
+<div id="container" class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-header text-center h5">Rejestracja produktu</div>
+                <div class="card-body">
+                    <form class="row g-3" action="/add_item" method="POST">
+                        {% csrf_token %}
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Nazwa</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="price" class="form-label">Cena</label>
+                            <input type="number" class="form-control" id="price" name="price" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="number" class="form-label">Ilość</label>
+                            <input type="number" class="form-control" id="number" name="number" required>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Dodaj produkt</button>
+                        </div>
+                    </form>
+                    {% if error %}
+                    <div class="text-center">
+                        <div class="alert alert-danger alert-dismissible in mt-2 mb-0 d-inline-block text-center">
+                            <div class="small">{{ error }}</div>
+                            <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        </div>                    
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

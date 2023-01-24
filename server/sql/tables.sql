@@ -1,10 +1,12 @@
 DROP SCHEMA shop CASCADE;
 CREATE SCHEMA shop;
 
+DROP TYPE GENDER_TYPE CASCADE;
+CREATE TYPE GENDER_TYPE AS ENUM ('Brak', 'Mężczyzna', 'Kobieta', 'Inny');
 
 CREATE TABLE shop.Gender (
     id SERIAL,
-    gender VARCHAR(10) NOT NULL,
+    gender GENDER_TYPE,
     CONSTRAINT gender_pk PRIMARY KEY (id)
 );
 

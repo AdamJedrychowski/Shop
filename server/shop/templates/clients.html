@@ -3,15 +3,8 @@
 
 {% block content %}
 <main class="container table-responsive">
-    <header class="row">
-        <div class="col-6">
-            <h2>Pracownicy</h2>
-        </div>
-        <div class="col-6 d-flex justify-content-end">
-            <a href="/add_employee">
-                <button type="button" class="btn btn-primary">Dodaj pracownika</button>
-            </a>
-        </div>
+    <header>
+        <h2>Klienci</h2>
     </header>
     <table class="table table-striped table-fixed">
         <thead>
@@ -20,19 +13,21 @@
                 <th scope="col">Imie</th>
                 <th scope="col">Nazwisko</th>
                 <th scope="col">Email</th>
-                <th scope="col">Przypisane zamówienia</th>
-                <th scope="col">Zwolnij</th>
+                <th scope="col">Wiek</th>
+                <th scope="col">Płeć</th>
+                <th scope="col">Kraj</th>
             </tr>
         </thead>
         <tbody>
-            {% for id, name, surname, email, count in employees %}
+            {% for id, name, surname, email, age, gender, country in clients %}
             <tr>
                 <td>{{ id }}</td>
                 <td>{{ name }}</td>
                 <td>{{ surname }}</td>
                 <td>{{ email }}</td>
-                <td>{{ count }}</td>
-                <td><button class="btn btn-default" onclick="fire({{ id }})" type="button" style="color:red">x</button></td>
+                <td>{{ age }}</td>
+                <td>{{ gender }}</td>
+                <td>{{ country }}</td>
             </tr>
             {% endfor %}
         </tbody>

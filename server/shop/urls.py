@@ -20,4 +20,10 @@ urlpatterns = [
     path('employees', views.employees, name='employees'),
     path('fire', views.fire, name='fire'),
     path('add_employee', views.add_employee, name='add_employee'),
+    path('list_items', views.list_items, name='list_items'),
+    path('add_item', views.add_item, name='add_item'),
+    path('clients', views.clients, name='clients'),
+    path('country_item', views.country_item, name='country_item'),
+    path('country_earn', views.country_earn, name='country_earn'),
+    path('documentation', views.documentation, name='documentation'),
 ]

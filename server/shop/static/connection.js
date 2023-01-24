@@ -34,6 +34,10 @@ function addItem(id) {
 function order(event) {
     event.preventDefault();
 
+    if(Object.keys(itemsList).length == 0) {
+        alert('Wybierz produkt');
+        return;
+    }
     var location = document.getElementById('adress').value;
     fetch('/items', {
         method: 'POST',
@@ -110,4 +114,11 @@ function fire(id) {
         alert(data.response);
         window.location.href = '/employees';
     }).catch(error => console.error('Error:', error));
+}
+
+
+function list_items(type, option) {
+    var url = window.location.href;
+    if(type == "sort") window.location.href = url.replace(/sort=\d+/, "sort="+option);
+    else window.location.href = url.replace(/filter=\d+/, "filter="+option);
 }

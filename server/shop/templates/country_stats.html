@@ -1,0 +1,30 @@
+{% extends "admin.html" %}
+
+
+{% block content %}
+<main class="container table-responsive">
+    <header>
+        <h2>Liczba sprzedanych produktów i zyski w danym kraju</h2>
+    </header>
+    <table class="table table-striped table-fixed">
+        <thead>
+            <tr>
+                <th scope="col">Kraj</th>
+                <th scope="col">Liczba</th>
+                <th scope="col">Zysk</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for country, count, earn in country_stats %}
+            <tr>
+                <td>{{ country }}</td>
+                <td>{{ count }}</td>
+                <td>{{ earn }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</main>
+{% endblock %}
+

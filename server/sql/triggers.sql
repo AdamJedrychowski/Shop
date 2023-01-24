@@ -6,6 +6,14 @@ DROP TRIGGER fire_employee ON shop.Employee;
 DROP FUNCTION fire;
 
 
+
+-- 
+-- Trigger załącza się przed wstawieniem nowego zamówienia. Wtedy ustawia status zamówienia na 'Nie opłacone'.
+-- Uruchamia się też przed zaktualizowaniem danych. Jeśli klient opłacił zamówienie to zmieni się jego status na 'Przygotowywane' i
+-- w tym momencie trigger wyszukuje magazyniera z najmniejszą ilościa zamówień i przypisuje go do tego zamówienia.
+-- Kiedy magazynier przygotuje zamówienie, status zmieni się na 'Oczekuje na kuriera', CTE wyszuka kuriera z najmniejszą ilością przesyłek i
+-- przypnie do niego paczkę. Kiedy kurier dostarczy pczkę to zamowienie przestaje mieć przypiętego pracownika.
+-- 
 CREATE OR REPLACE FUNCTION order_state() RETURNS TRIGGER AS $$
 DECLARE
     new_id INTEGER;
@@ -40,7 +48,10 @@ FOR EACH ROW EXECUTE PROCEDURE order_state();
 
 
 
-
+-- 
+-- Trigger uruchamia się po wstawieniu produktu z zamówienia do bazy danych.
+-- Wtedy to odejmuje zamówioną ilość tego produktu od ilości na magazynie.
+-- 
 CREATE OR REPLACE FUNCTION magazine() RETURNS TRIGGER AS $$
 BEGIN
     UPDATE shop.Item SET number = number - NEW.quantity WHERE id = NEW.id_item;
@@ -54,6 +65,11 @@ FOR EACH ROW EXECUTE PROCEDURE magazine();
 
 
 
+-- 
+-- Trigger załącza się przed zwolnieniem pracownika. Ma na celu przypisać innych pracowników na tym samym stanowisku do zamówień.
+-- Stosujemy pętle aby nie przerzucić wszystkich zamówień na jednego pracownika.
+-- Za każda iteracją szukamy pracownika o najmniejszej ilości zamówień, służy nam do tego CTE.
+-- 
 CREATE OR REPLACE FUNCTION fire() RETURNS TRIGGER AS $$
 DECLARE
     rows INTEGER;

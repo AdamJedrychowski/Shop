@@ -1,0 +1,126 @@
+{% extends "template.html" %}
+{% load static %}
+
+{% block menu_bottom %}
+<div class="dropdown pb-4 no-scroll">
+    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu-bottom">
+        <li>
+            <a href="/login" class="nav-link px-0 align-middle">
+                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Zaloguj się</span></a>
+        </li>
+        <li>
+            <a href="/register" class="nav-link px-0 align-middle">
+                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Zarejestruj się</span></a>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="container h-100 w-75">
+    <div>
+        <h3 class="text-center">Projekt koncepcji, założenia</h3>
+        Projekt ma na celu imitować działanie sklepu internetowego, gdzie każdy klient może założyć konto użytkownika i zamawiać produkty. Zamówienie trafia do pracowników, którzy je przetwarzają.
+        Nad pracownikami jest admin, który ma wgląd w statystyki sklepu. Baza danych implementuje płynny przepływ danych (zamówienia) pomiędzy różnymi pracownikami,
+        informując przy tym klienta jaki jest aktualny stan zamówienia. W bazie danych zawarte są funkcjie umożliwiające rejestracje nowego użytkownika, autentyfikacje go oraz dodanie nowego produktu do sprzedarzy.
+
+
+        <h3 class="text-center pt-4">Projekt diagramów</h3>
+        Cały diagram DFD jest oparty o zmiany statusów zamówienia, które sterują do którego kolejno pracownika ma zostać przekazane zamówienie
+        <div class="text-center pb-2">
+            <img src="{% static 'dfd.png' %}" alt="Image" style="width: 85%;height: 85%;">
+        </div>
+        W bazie można wyróżnić parę encji, między innymi klienta, zbieramy w niej informacje potrzebne zarówno do autoryzacji użytkownika jak i do przedstawienia statystyk sklepu.
+        Kolejną encją jaką można wyróżnić jest zamówienie, zawarta jest w nim informacja gdzie powinno zostać dostarczone zamówienie, jaki jest jego status, kiedy zostało dokonane, do którego klienta należy
+        oraz do jakiego przcownika jest przypisane. Wyróżnić można jeszcze pracownika - informacje na temat stanowiska, dane autoryzacyjne oraz produkt, który posiada nazwe oferowanego produktu,
+        jego cene oraz stan na magazynie.
+        <div class="text-center pb-2">
+            <img src="{% static 'erd.png' %}" alt="Image" style="width: 85%;height: 85%;">
+        </div>
+
+
+        <h3 class="text-center pt-4">Projekt logiczny</h3>
+        Po za właściwościami widocznymi na ERD przy tworzeniu bazy danych użyłem typu SERIAL do automatycznego zwiększania id (PRIMARY KEY) relacji oraz ograniczenia UNIQUE w celu upewnienia się, że
+        żadna nazwa stanowiska, email się nie powtórzą i ENUM użyty do ustalenia wartości jakie może przyjąć atrybut płeć. W projekcie istnieją 3 słowniki danych, są to Płeć - przechowuje płeć klienta,
+        Narodowość - kraj z jakiego pochodzi klient oraz Praca - nazwa stanowiska pracy pracownika. W bazie danych można rozważyć stworzenie słownika Wiek dla klienta, jednak biorąc pod uwagę że
+        baza nie będzie mieć na razie zbyt dużo użytkowników postanowiłem stworzyć atrybut wiek dla klienta. W bazie jest dostępna jedna funkcja do autentyfikacji zarówno dla klienta jak i pracowników,
+        w razie nie spójnych danych wyżuca odpowiedni wyjątek. Funkcje rejestrujące nowego prcownika/klienta są bardzo podobne. Sprawdzają poprawność emaila, czy konto na dany email już istnieje w
+        relacji Klient lub Pracownik oraz dla klienta sprawdza czy wpisał odpowiednią ilość lat, a dla pracownika czy dane stanowisko istnieje. Funkcja dodająca nowy produnkt sprawdza czy dana nazwa
+        produktu nie istnieje już w bazie oraz czy cena i ilość dodawanych produktów nie są ujemne. Istnieje funkcja wyszukująca wszystkie informacji na temat klientów, wyszukująca ilość
+        zakupionych produktów, ich nazwę dla wszystkich krajów oraz wyszukująca ilość produktów sprzedanych i zysk we wszystkich krajach. W bazie  danych stworzony jest trigger kontrolujący status
+        zamówienia. Przed wpisaniem nowego zamówienia do bazy ustawia on status na 'Nie opłacone'. W momencie zmiany statusu wyszukuje on odpowiedniego pracownika o najmniejszej ilości zamówień i
+        przypisuje zamówienie do niego. Jest też trigger kontrolujący stan magazynu, w momencie pojawienia się nowego zamówienia trigger usuwa daną ilośc itemów z magazynu. Ostatni trigger
+        przed zwolnieniem pracownika przekazuje jego zamówienia innym pracownikom.<br>Część projektu w języku SQL można znaleźć w Shop/server/sql/ oraz zawołania SQL-a po stronie aplikacji można
+        znaleźć w pliku /Shop/server/shop/view.py
+
+
+
+        <h3 class="text-center pt-4">Projekt funkcjonalny </h3>
+        Formularz rejestracyjny użytkownika wymaga podania imienia, nazwiska, maila, hasła, kraju, płci i wieku po pozytywnej walidacji danych. Formularz rejestracyjny pracownika jest dostępny
+        tylko dla admina i wymaga wprowadzenia imienia, nazwiska, maila, hasła, stanowiska nowego pracownika. Dane te również przechodzą walidacje. Użytkownik po udanej rejestracji może się zalogować
+        wpisując email i hasło. Każde z wymienionych formularzy w razie nie powodzenia wyświetla odpowiednią informacje użytkownikowi. Składanie zamówień dostępne jest po zalogowaniu, z bazy ładowane
+        są dostępne produkty, klient może wybrać je z listy wpisać gdzie mają być dostarczone i złożyć zamówienie. Zostanie ono dalej przetworzone w bazie danych, gdzie zostanie sprawdzony stan itemów
+        na magazynie. Po udanym złożeniu zamówienia użytkownik dostaje o tym informacje. Klient może wyświetlić swoje zamówienia oraz je przefiltrować. Interfejsy pracowników są podobne, wyświetlają
+        zamówienia przypisane do nich i dają możliwość zmiany stanu. Interfejs admina pozwala wypisać z bazy prcowników i ich zwolnić, dodać nowego pracownika, wyświetlić klientów oraz
+        statystyki sklepu. Informacje o produktach również są dostępne można je przefiltrować/posortować lub dodać nowy produkt. Dane z bazy danych są wypisywane w większości w formie tabel.
+        W interfejsie zostały również użyte makropolecenia do ułatwienia obsługi aplikacji (przycisk Zamów -> wstawienie zamówienia, przycisk Opłać -> zmiana statusu)
+        
+
+
+        <h3 class="text-center pt-4">Dokumentacja</h3>
+        Interfejs umożliwia proste wstawianie nowych danych takich jak klienci, zamówienia, pracownicy, nowe produkty. Wstawianie odbywa również się przy tworzeniu bazy, kiedy to zostają wprowadzone
+        podstawowe dane. Wpierw można utworzyć konto użytkownika, zalogować się, nastąpi przekierowanie na stonr z produktami, można pododawać produkty do zamówienia i je złożyć. Zamówienie można opłacić
+        w zakładce "Do opłacenia". Zamówienie to pojawi się w panelu magazyniera o najmniejszej liczbie przypisanych zamówień. Wszystkie dane do kont pracowniczych są niżej. W panelu magazyniera można zmienić
+        status na 'Oczekuje na kuriera', następnie w panelu dostawcy na 'W drodze' oraz 'Dostarczone'. Po zalogowaniu na admina można wyświetlić osoby z bazy oraz różne statystyki.
+        <div class="pt-4 pb-5">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Pracownik</th>
+                        <th>Amail</th>
+                        <th>Hasło</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Admin</td>
+                        <td>admin@gmail.com</td>
+                        <td>a</td>
+                    </tr>
+                    <tr>
+                        <td>Magazynier</td>
+                        <td>mag1@gmail.com</td>
+                        <td>a</td>
+                    </tr>
+                    <tr>
+                        <td>Magazynier</td>
+                        <td>mag2@gmail.com</td>
+                        <td>a</td>
+                    </tr>
+                    <tr>
+                        <td>Magazynier</td>
+                        <td>mag3@gmail.com</td>
+                        <td>a</td>
+                    </tr>
+                    <tr>
+                        <td>Dostawca</td>
+                        <td>dostawca1@gmail.com</td>
+                        <td>a</td>
+                    </tr>
+                    <tr>
+                        <td>Dostawca</td>
+                        <td>dostawca2@gmail.com</td>
+                        <td>a</td>
+                    </tr>
+                    <tr>
+                        <td>Dostawca</td>
+                        <td>dostawca3@gmail.com</td>
+                        <td>a</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

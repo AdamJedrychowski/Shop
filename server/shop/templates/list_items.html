@@ -1,0 +1,74 @@
+{% extends "admin.html" %}
+
+
+{% block content %}
+<main class="container table-responsive h-100">
+    <header class="row">
+        <div class="col-4">
+            <h2>Dostępne produkty</h2>
+        </div>
+        <div class="col-2">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    Posortuj według:
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><button type="button" onclick="list_items('sort', 0)" class="btn btn-default dropdown-item">ID</button></li>
+                    <li><button type="button" onclick="list_items('sort', 1)" class="btn btn-default dropdown-item">Nazwy rosnąco</button></li>
+                    <li><button type="button" onclick="list_items('sort', 2)" class="btn btn-default dropdown-item">Nazwy malejąco</button></li>
+                    <li><button type="button" onclick="list_items('sort', 3)" class="btn btn-default dropdown-item">Ilości rosnąco</button></li>
+                    <li><button type="button" onclick="list_items('sort', 4)" class="btn btn-default dropdown-item">Ilości malejąco</button></li>
+                    <li><button type="button" onclick="list_items('sort', 5)" class="btn btn-default dropdown-item">Ilości sprzedanych rosnąco</button></li>
+                    <li><button type="button" onclick="list_items('sort', 6)" class="btn btn-default dropdown-item">Ilości sprzedanych malejąco</button></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    Filtruj według:
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><button type="button" onclick="list_items('filter', 0)" class="btn btn-default dropdown-item">Wszystko</button></li>
+                    <li><button type="button" onclick="list_items('filter', 1)" class="btn btn-default dropdown-item">Wyświetl 1 wartość</button></li>
+                    <li><button type="button" onclick="list_items('filter', 2)" class="btn btn-default dropdown-item">Wyświetl 3 wartości</button></li>
+                    <li><button type="button" onclick="list_items('filter', 3)" class="btn btn-default dropdown-item">Powyżej średniej liczby sprzedanych</button></li>
+                    <li><button type="button" onclick="list_items('filter', 4)" class="btn btn-default dropdown-item">Powyżej średniej ceny</button></li>
+                    <li><button type="button" onclick="list_items('filter', 5)" class="btn btn-default dropdown-item">Sprzedanych więcej niż na magazynie</button></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-3">
+            <a href="/add_item">
+                <button type="button" class="btn btn-primary">Dodaj produkt</button>
+            </a>
+        </div>
+    </header>
+
+
+    <table class="table table-striped table-fixed">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Nazwa</th>
+                <th scope="col">Cena</th>
+                <th scope="col">Liczba</th>
+                <th scope="col">Liczba sprzedanych</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for id, name, price, number, quantity in items %}
+            <tr>
+                <td>{{ id }}</td>
+                <td>{{ name }}</td>
+                <td>{{ price }}</td>
+                <td>{{ number }}</td>
+                <td>{{ quantity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</main>
+{% endblock %}
+

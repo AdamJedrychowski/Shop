@@ -1,0 +1,30 @@
+{% extends "admin.html" %}
+
+
+{% block content %}
+<main class="container table-responsive">
+    <header>
+        <h2>Kupione produkty w danym kraju i ich liczba</h2>
+    </header>
+    <table class="table table-striped table-fixed">
+        <thead>
+            <tr>
+                <th scope="col">Kraj</th>
+                <th scope="col">Nazwa</th>
+                <th scope="col">Liczba</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for country, name, count in country_buy_item %}
+            <tr>
+                <td>{{ country }}</td>
+                <td>{{ name }}</td>
+                <td>{{ count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</main>
+{% endblock %}
+
